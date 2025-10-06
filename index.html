@@ -6,10 +6,58 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        
+        <h1>DevTask Manager</h1>
+        <div id="issue-columns">
+            <div class="issue-column" id="backlog">
+            <span class="column-title">Backlog:</span>
+            <span class="issue-count" id="backlog-count">0</span>
+            </div>
+            <div class="issue-column" id="in-progress">
+            <span class="column-title">In Progress:</span>
+            <span class="issue-count" id="in-progress-count">0</span>
+            </div>
+            <div class="issue-column" id="review">
+            <span class="column-title">Review:</span>
+            <span class="issue-count" id="review-count">0</span>
+            </div>
+            <div class="issue-column" id="done">
+            <span class="column-title">Done:</span>
+            <span class="issue-count" id="done-count">0</span>
+            </div>
+        </div>
+        <div class="issue-manager">
+            <button id="add-issue-btn">Add Issue</button>
+            <input type="text" id="search-bar" placeholder="Search tasks">
+        </div>
+        <div class="kanban-board">
+            <div class="kanban-column">
+                <h2>Backlog <span class="issue-count" id="kanban-backlog-count">0</span></h2>
+                <div class="kanban-cards" id="kanban-backlog">
+                    <!-- Qui ci vanno le Card delle Issues -->
+                </div>
+            </div>
+            <div class="kanban-column">
+                <h2>In Progress <span class="issue-count" id="kanban-in-progress-count">0</span></h2>
+                <div class="kanban-cards" id="kanban-in-progress">
+                    <!-- Qui ci vanno le Card delle Issues -->
+                </div>
+            </div>
+            <div class="kanban-column">
+                <h2>Review <span class="issue-count" id="kanban-review-count">0</span></h2>
+                <div class="kanban-cards" id="kanban-review">
+                    <!-- Qui ci vanno le Card delle Issues -->
+                </div>
+            </div>
+            <div class="kanban-column">
+                <h2>Done <span class="issue-count" id="kanban-done-count">0</span></h2>
+                <div class="kanban-cards" id="kanban-done">
+                    <!-- Qui ci vanno le Card delle Issues -->
+                </div>
+            </div>
+        </div>
         <script src="script.js" async defer></script>
     </body>
 </html>

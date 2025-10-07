@@ -1,16 +1,25 @@
 # Progetto TPI
 **PULL**
+```bash
+git fetch                        # Scarica changes remote, non modifica copia locale
+git status                       # Stato versione locale rispetto alle changes remote
+git pull                         # Unisce le changes remote alla versione locale
 ```
-git fetch
-git status
-git pull
-```
+
 **PUSH**
+```bash
+git status                       # Per mostrare quali file sono tracked per il commit
+git add .                        # Trackka i file da committare, . per tutti, se no scrivere il nome
+git commit -m "descrizione"      # Salva i changes in locale, pronti da essere pushati, best practice fare molti commit cosi da avere checkpoints dello stato del lavoro, descrizioni piu dettagliati di ogni cambiamento cosi da poter poi resettare a un commit intermedio in caso di errori o bug
+git push                         # Aggiorna il branch remoto con le changes locali committate
 ```
-git status
-git add .
-git commit -m "descrizione"
-git push
+
+**BRANCHING**
+```bash
+git switch -c branch_name        # Create and move to the branch
+git switch branch_name           # Move to the branch
+git branch --list                # Lista dei branch
+git status                       # Mostra su che branch sei e posizione rispetto al main
 ```
 
 
@@ -18,20 +27,20 @@ git push
 
 ## 1. Introduzione
 
-Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digitale**, uno strumento informatico per la gestione visuale di attività e task, ispirato alla metodologia Agile. La Kanban Board permette di organizzare i compiti in colonne rappresentanti gli stati di avanzamento (es. Da fare, In corso, Fatto), migliorando la gestione del lavoro individuale o di gruppo.
+Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digitale**, uno strumento informatico per la gestione visuale di attività e task. La Kanban Board permette di organizzare i compiti in colonne rappresentanti gli stati di avanzamento (es. Da fare, In corso, Da Revisionare e Fatto), migliorando la gestione del lavoro individuale o di gruppo.
 
 ## 2. Obiettivi del progetto
 
 * Creare una web app semplice e intuitiva per la gestione delle attività.
 * Consentire l’aggiunta, modifica, spostamento e cancellazione di task.
 * Organizzare i task in colonne rappresentanti lo stato di avanzamento.
-* Salvare i dati in modo persistente (es. localStorage o database).
-* Garantire un’interfaccia responsive, accessibile da desktop e mobile.
+* Salvare i dati in modo persistente (localStorage).
+* Garantire un’interfaccia responsive, accessibile da desktop e possibilmente da mobile.
 
 ## 3. Tecnologie utilizzate
 
-* **Frontend**: HTML, TailWind, JavaScript.
-* **Backend** (opzionale, se previsto): Node.js con Express, Python con Flask/Django, o altro.
+* **Frontend**: HTML, CSS, JavaScript (Tailwind).
+* **Backend** Js
 * **Strumenti**: Editor di codice (VS Code), Git per versionamento.
 
 ## 4. Descrizione funzionalità
@@ -45,42 +54,37 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 
 ## 5. Architettura del progetto
 
-* **Frontend**: Gestisce l’interfaccia utente e le interazioni (drag & drop, form).
-* **Backend**: Riceve e memorizza i dati, gestisce le richieste API (se presente).
-* **Database**: Conserva i dati dei task e lo stato della board.
+* **Frontend**: Gestisce l’interfaccia utente e le interazioni.
+* **Backend**: Riceve e memorizza i dati dal form, gestisce le parti dinamiche della pagina (drag & drop, form).
 
-## 6. Diagrammi (opzionale)
-
-* Diagramma delle classi / componenti.
-* Diagramma di flusso delle funzionalità.
-* Wireframe dell’interfaccia utente.
-
-## 7. Installazione e avvio
-
-### Requisiti
-
-* Node.js e npm (se backend o frontend con toolchain)
-* Browser moderno
 
 ### Istruzioni
 
 1. Clonare il repository:
 
    ```bash
-   git clone https://github.com/tuo-username/kanban-board.git
+   git clone https://github.com/D4rknezSl1me/kanbanboard-scuola.git
    ```
-2. Installare le dipendenze:
+2. Avviare un server:
 
    ```bash
-   cd kanban-board
-   npm install
+   python -m http.server
+   # oppure
+   python3 -m http.server
    ```
-3. Avviare il progetto:
+3. Alternativamente usa live server su vscode:
 
    ```bash
-   npm start
+   https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
    ```
-4. Aprire il browser all’indirizzo: `http://localhost:3000`
+4. Aprire il browser all’indirizzo: 
+   ```bash
+   # Live Server (la porta potrebbe cambiare)
+   http://127.0.0.1:5500/
+   
+   # Python http server (la porta potrebbe cambiare)
+   http://127.0.0.1:8000/
+   ```
 
 ## 8. Test e verifica
 
@@ -93,6 +97,5 @@ Il progetto ha permesso di realizzare una semplice Kanban Board funzionale, util
 
 ## 10. Riferimenti e fonti
 
-* Documentazione ufficiale di React / Vue / altro
-* Tutorial utilizzati
-* Librerie esterne integrate
+* Documentazione ufficiale di Tailwind / W3Schools 
+* Librerie esterne integrate: Tailwind

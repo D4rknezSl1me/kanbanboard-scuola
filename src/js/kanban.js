@@ -1,0 +1,217 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // status -> container id map
+  function getContainerByKey(key) {
+    const map = {
+      "backlog": "kanban-backlog",
+      "in-progress": "kanban-in-progress",
+      "review": "kanban-review",
+      "done": "kanban-done",
+      "kanban-backlog": "kanban-backlog",
+      "kanban-in-progress": "kanban-in-progress",
+      "kanban-review": "kanban-review",
+      "kanban-done": "kanban-done",
+    };
+
+    if (!key) return document.getElementById("kanban-backlog");
+    const normalized = String(key).toLowerCase();
+    const id = map[normalized] || map[key] || "kanban-backlog";
+    return document.getElementById(id);
+  }
+
+  const STORAGE_KEY = "kanban_tasks";
+  let tasks = [];
+
+  function loadTasks() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      tasks = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error("Failed to load tasks from localStorage:", e);
+      tasks = [];
+    }
+  }
+
+  function saveTasks() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    } catch (e) {
+      console.error("Failed to save tasks to localStorage:", e);
+    }
+  }
+
+  function generateId() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+    } catch (e) {}
+
+    // Fallback: timestamp + small random token (keeps backward compatibility)
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  }
+
+  // create a DOM element for a task object
+  function createCardElement(task) {
+    const card = document.createElement("article");
+    card.className = "bg-white bg-opacity-90 rounded-lg p-3 mb-3 shadow border border-gray-200 overflow-hidden cursor-pointer";
+    card.style.aspectRatio = "4 / 3";
+    card.style.display = "flex";
+    card.style.flexDirection = "column";
+    card.dataset.taskId = task.id;
+
+    const h = document.createElement("h3");
+    h.className = "font-semibold text-lg text-gray-800 truncate";
+    h.textContent = task.title || "Untitled";
+
+    const p = document.createElement("p");
+    p.className = "text-sm text-gray-700 mt-2";
+    p.style.flex = "1 1 auto";
+    p.style.overflow = "auto";
+    p.textContent = task.description || "";
+
+    card.appendChild(h);
+    card.appendChild(p);
+
+    // simple click handler to cycle status (optional quick action)
+    card.addEventListener("dblclick", function () {
+      // cycle through statuses: backlog -> in-progress -> review -> done -> backlog
+      const order = ["backlog", "in-progress", "review", "done"];
+      const idx = order.indexOf(task.status);
+      const next = order[(idx + 1) % order.length];
+      updateTaskStatus(task.id, next);
+    });
+
+    return card;
+  }
+
+  // Renders all tasks into their respective columns
+  function renderAll() {
+    // clear containers
+    ["kanban-backlog", "kanban-in-progress", "kanban-review", "kanban-done"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = "";
+    });
+
+    // append tasks in insertion order
+    tasks.forEach(task => {
+      const container = getContainerByKey(task.status);
+      if (container) {
+        container.appendChild(createCardElement(task));
+      }
+    });
+
+    updateCounts();
+  }
+
+  function addTask(title, description, status) {
+    const task = {
+      id: generateId(),
+      title: title || "Untitled",
+      description: description || "",
+      status: status || "backlog",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    tasks.push(task);
+    saveTasks();
+    renderAll();
+    return task;
+  }
+
+  function updateTaskStatus(id, newStatus) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return null;
+    t.status = newStatus;
+    t.updatedAt = new Date().toISOString();
+    saveTasks();
+    renderAll();
+    return t;
+  }
+
+  function updateTask(id, patch) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return null;
+    Object.assign(t, patch);
+    t.updatedAt = new Date().toISOString();
+    saveTasks();
+    renderAll();
+    return t;
+  }
+
+  function deleteTask(id) {
+    const idx = tasks.findIndex(x => x.id === id);
+    if (idx === -1) return false;
+    tasks.splice(idx, 1);
+    saveTasks();
+    renderAll();
+    return true;
+  }
+
+  function getTasks() {
+    return tasks.slice(); // return a copy
+  }
+
+  // Existing utilities: counts
+  function updateCounts() {
+    const counts = {
+      backlog: tasks.filter(t => t.status === "backlog").length,
+      "in-progress": tasks.filter(t => t.status === "in-progress").length,
+      review: tasks.filter(t => t.status === "review").length,
+      done: tasks.filter(t => t.status === "done").length,
+    };
+
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText("backlog-count", counts.backlog);
+    setText("in-progress-count", counts["in-progress"]);
+    setText("review-count", counts.review);
+    setText("done-count", counts.done);
+
+    setText("kanban-backlog-count", counts.backlog);
+    setText("kanban-in-progress-count", counts["in-progress"]);
+    setText("kanban-review-count", counts.review);
+    setText("kanban-done-count", counts.done);
+  }
+
+  // Add card function now persists the task
+  function addCardToColumn(title, description, columnKey) {
+    const status = (columnKey || "backlog").toString().toLowerCase();
+    const created = addTask(title, description, status);
+    // return the DOM element for convenience
+    const container = getContainerByKey(created.status);
+    if (!container) return null;
+    return container.querySelector(`[data-task-id="${created.id}"]`);
+  }
+
+  // Expose global API
+  window.addCardToColumn = addCardToColumn;
+  window.addTask = addTask;
+  window.getTasks = getTasks;
+  window.updateTaskStatus = updateTaskStatus;
+  window.updateTask = updateTask;
+  window.deleteTask = deleteTask;
+
+  // wire the existing form to add cards (keeps form.js minimal for UI toggling)
+  const issueForm = document.getElementById("issue-form");
+  const formContainer = document.getElementById("form");
+  if (issueForm) {
+    issueForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const status = document.getElementById("status").value;
+
+      addTask(title, description, status);
+
+      if (formContainer) formContainer.classList.add("hidden");
+      issueForm.reset();
+    });
+  }
+
+  // initial load
+  loadTasks();
+  renderAll();
+});

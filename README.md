@@ -30,9 +30,8 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 
 ## 3. Tecnologie utilizzate
 
-* **Frontend**: HTML, CSS, JavaScript (oppure framework come React, Vue, Angular).
+* **Frontend**: HTML, TailWind, JavaScript.
 * **Backend** (opzionale, se previsto): Node.js con Express, Python con Flask/Django, o altro.
-* **Database** (se previsto): MongoDB, MySQL, SQLite o localStorage per persistente lato client.
 * **Strumenti**: Editor di codice (VS Code), Git per versionamento.
 
 ## 4. Descrizione funzionalità

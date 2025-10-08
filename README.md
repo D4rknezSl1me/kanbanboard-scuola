@@ -46,11 +46,11 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 ## 4. Descrizione funzionalità
 
 * [x] **Creazione task**: L’utente può inserire un nuovo task con titolo e descrizione.
-* [] **Modifica task**: È possibile modificare il contenuto di un task.
-* [] **Spostamento task**: Drag and drop dei task tra colonne (Da fare, In corso, Fatto).
-* [] **Eliminazione task**: Rimuovere un task completato o non più necessario.
-* [] **Salvataggio dati**: I task e lo stato della board vengono salvati per non perdere le modifiche.
-* [] **Filtri e ricerche** (opzionale): Ricerca di task per parola chiave o filtro per categoria.
+* [ ] **Modifica task**: È possibile modificare il contenuto di un task.
+* [ ] **Spostamento task**: Drag and drop dei task tra colonne (Da fare, In corso, Fatto).
+* [ ] **Eliminazione task**: Rimuovere un task completato o non più necessario.
+* [ ] **Salvataggio dati**: I task e lo stato della board vengono salvati per non perdere le modifiche.
+* [ ] **Filtri e ricerche** (opzionale): Ricerca di task per parola chiave o filtro per categoria.
 
 ## 5. Architettura del progetto
 

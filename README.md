@@ -99,3 +99,4 @@ Il progetto ha permesso di realizzare una semplice Kanban Board funzionale, util
 
 * Documentazione ufficiale di Tailwind / W3Schools 
 * Librerie esterne integrate: Tailwind
+![assets/imgs/sexy_carpa_graffiti.png]

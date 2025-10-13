@@ -21,6 +21,39 @@ document.addEventListener("DOMContentLoaded", function () {
   const STORAGE_KEY = "kanban_tasks";
   let tasks = [];
 
+  function openEditForm(task) {
+  const formContainer = document.getElementById("form");
+  const formSection = document.getElementById("form-section");
+  const issueForm = document.getElementById("issue-form");
+
+  if (!formContainer || !issueForm) return;
+
+  // Mostra il form
+  formSection.classList.remove("hidden");
+  formContainer.classList.remove("hidden");
+
+  // Compila i campi con i dati esistenti
+  document.getElementById("title").value = task.title || "";
+  document.getElementById("description").value = task.description || "";
+  document.getElementById("status").value = task.status || "backlog";
+
+  // Cambia comportamento del submit
+  issueForm.onsubmit = function (e) {
+    e.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const status = document.getElementById("status").value;
+
+    updateTask(task.id, { title, description, status });
+    issueForm.reset();
+    formContainer.classList.add("hidden");
+    formSection.classList.add("hidden");
+
+    // Ripristina submit originale dopo modifica
+    issueForm.onsubmit = null;
+  };
+}
+
   function loadTasks() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);

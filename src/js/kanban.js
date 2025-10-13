@@ -68,8 +68,35 @@ document.addEventListener("DOMContentLoaded", function () {
     p.style.overflow = "auto";
     p.textContent = task.description || "";
 
+     // --- Nuovi bottoni ---
+  const btnContainer = document.createElement("div");
+  btnContainer.className = "mt-3 flex justify-between";
+
+  // Bottone Modifica
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Modifica";
+  editBtn.className = "bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
+  editBtn.addEventListener("click", function () {
+    openEditForm(task);
+  });
+
+  // Bottone Cancella
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Cancella";
+  deleteBtn.className = "bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600";
+  deleteBtn.addEventListener("click", function () {
+    if (confirm("Vuoi davvero cancellare questo task?")) {
+      deleteTask(task.id);
+    }
+  });
+
+  btnContainer.appendChild(editBtn);
+  btnContainer.appendChild(deleteBtn);
+
+
     card.appendChild(h);
     card.appendChild(p);
+    card.appendChild(btnContainer);
 
     // Double-click per procedere allo stato successivo
     card.addEventListener("dblclick", function () {

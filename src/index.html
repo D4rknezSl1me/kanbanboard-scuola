@@ -10,7 +10,7 @@
   <body >
     <div class="min-h-screen bg-cover bg-center" style="background-image: url('../assets/imgs/sexy_carpa_graffiti.png')">
       <header class="p-4 flex items-center justify-between">
-        <h1 class="font-bold bg-red-500 rounded-lg p-4 text-white inline-block">DevTask Manager</h1>
+        <h1 class="font-bold text-4xl text-white inline-block">DevTask Manager</h1>
 
         <section id="issue-columns" class="flex gap-3">
           <div id="backlog">
@@ -32,7 +32,7 @@
         
 
         <section class="issue-manager flex items-center gap-4">
-          <button id="add-issue-btn" class="font-bold bg-red-500 rounded-lg p-3 text-white">Add Issue</button>
+          <button id="add-issue-btn" class="font-bold bg-[#d91e19] rounded-lg p-3 text-white">Add Issue</button>
           <input type="text" id="search-bar" placeholder="Search tasks" class="px-3 py-2 rounded border" />
         </section>
 
@@ -62,7 +62,7 @@
       </main>
     </div>
       <section id="form-section" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 bg-center hidden">
-          <div id="form" class="hidden bg-white p-4 rounded shadow max-w-md center">
+          <div id="form" class="hidden bg-white p-6 rounded shadow-2xl max-w-md center w-[600px] h-[500px]">
             <h2 class="text-lg font-semibold mb-2">Add New Issue</h2>
             <form id="issue-form" class="space-y-3">
               <div>
@@ -82,9 +82,10 @@
                   <option value="done">Done</option>
                 </select>
               </div>
+              <br><br><br><br><br><br>
               <div class="flex gap-2">
-                <button type="submit" id="issue-btn1" class="bg-green-500 text-white px-3 py-1 rounded">Add Issue</button>
-                <button type="button" id="cancel-btn" class="bg-gray-200 px-3 py-1 rounded">Cancel</button>
+                <button type="submit" id="issue-btn1" class="bg-[#d91e19] text-white px-3 py-1 rounded center">Add Issue</button>
+                <button type="button" id="cancel-btn" class="bg-gray-200 px-3 py-1 rounded enter">Cancel</button>
               </div>
             </form>
           </div>

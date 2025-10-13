@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const raw = localStorage.getItem(STORAGE_KEY);
       tasks = raw ? JSON.parse(raw) : [];
     } catch (e) {
-      console.error("Failed to load tasks from localStorage:", e);
+      console.error("Errore localStorage:", e);
       tasks = [];
     }
   }
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     } catch (e) {
-      console.error("Failed to save tasks to localStorage:", e);
+      console.error("Errore localStorage:", e);
     }
   }
 
@@ -46,11 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (e) {}
 
-    // Fallback: timestamp + small random token (keeps backward compatibility)
+    // In caso il browser non supporti crypto.randomUUID
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
 
-  // create a DOM element for a task object
   function createCardElement(task) {
     const card = document.createElement("article");
     card.className = "bg-white bg-opacity-90 rounded-lg p-3 mb-3 shadow border border-gray-200 overflow-hidden cursor-pointer";
@@ -72,9 +71,9 @@ document.addEventListener("DOMContentLoaded", function () {
     card.appendChild(h);
     card.appendChild(p);
 
-    // simple click handler to cycle status (optional quick action)
+    // Double-click per procedere allo stato successivo
     card.addEventListener("dblclick", function () {
-      // cycle through statuses: backlog -> in-progress -> review -> done -> backlog
+      // backlog -> in-progress -> review -> done -> backlog
       const order = ["backlog", "in-progress", "review", "done"];
       const idx = order.indexOf(task.status);
       const next = order[(idx + 1) % order.length];
@@ -84,15 +83,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return card;
   }
 
-  // Renders all tasks into their respective columns
   function renderAll() {
-    // clear containers
     ["kanban-backlog", "kanban-in-progress", "kanban-review", "kanban-done"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = "";
     });
 
-    // append tasks in insertion order
     tasks.forEach(task => {
       const container = getContainerByKey(task.status);
       if (container) {
@@ -148,10 +144,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getTasks() {
-    return tasks.slice(); // return a copy
+    return tasks.slice();
   }
 
-  // Existing utilities: counts
   function updateCounts() {
     const counts = {
       backlog: tasks.filter(t => t.status === "backlog").length,
@@ -176,17 +171,16 @@ document.addEventListener("DOMContentLoaded", function () {
     setText("kanban-done-count", counts.done);
   }
 
-  // Add card function now persists the task
   function addCardToColumn(title, description, columnKey) {
     const status = (columnKey || "backlog").toString().toLowerCase();
     const created = addTask(title, description, status);
-    // return the DOM element for convenience
+
     const container = getContainerByKey(created.status);
     if (!container) return null;
     return container.querySelector(`[data-task-id="${created.id}"]`);
   }
 
-  // Expose global API
+  // Per usarle in altri script
   window.addCardToColumn = addCardToColumn;
   window.addTask = addTask;
   window.getTasks = getTasks;
@@ -194,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
   window.updateTask = updateTask;
   window.deleteTask = deleteTask;
 
-  // wire the existing form to add cards (keeps form.js minimal for UI toggling)
   const issueForm = document.getElementById("issue-form");
   const formContainer = document.getElementById("form");
   if (issueForm) {
@@ -211,7 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // initial load
   loadTasks();
   renderAll();
 });

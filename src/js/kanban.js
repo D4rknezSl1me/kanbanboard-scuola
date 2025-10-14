@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let tasks = [];
 
   function openEditForm(task) {
-  const formContainer = document.getElementById("form");
-  const formSection = document.getElementById("form-section");
-  const issueForm = document.getElementById("issue-form");
+  const formContainer = document.getElementById("form-edit");
+  const formSection = document.getElementById("form-section-edit");
+  const issueForm = document.getElementById("issue-form-edit");
 
   if (!formContainer || !issueForm) return;
 
@@ -33,16 +33,16 @@ document.addEventListener("DOMContentLoaded", function () {
   formContainer.classList.remove("hidden");
 
   // Compila i campi con i dati esistenti
-  document.getElementById("title").value = task.title || "";
-  document.getElementById("description").value = task.description || "";
-  document.getElementById("status").value = task.status || "backlog";
+  document.getElementById("title1").value = task.title || "";
+  document.getElementById("description1").value = task.description || "";
+  document.getElementById("status1").value = task.status || "backlog";
 
   // Cambia comportamento del submit
   issueForm.onsubmit = function (e) {
     e.preventDefault();
-    const title = document.getElementById("title").value.trim();
-    const description = document.getElementById("description").value.trim();
-    const status = document.getElementById("status").value;
+    const title = document.getElementById("title1").value.trim();
+    const description = document.getElementById("description1").value.trim();
+    const status = document.getElementById("status1").value;
 
     updateTask(task.id, { title, description, status });
     issueForm.reset();

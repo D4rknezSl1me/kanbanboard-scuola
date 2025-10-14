@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     card.style.aspectRatio = "4 / 3";
     card.style.display = "flex";
     card.style.flexDirection = "column";
+    card.style.position = "relative";
     card.dataset.taskId = task.id;
 
     const h = document.createElement("h3");
@@ -101,32 +102,47 @@ document.addEventListener("DOMContentLoaded", function () {
     p.style.overflow = "auto";
     p.textContent = task.description || "";
 
-     // --- Nuovi bottoni ---
-  const btnContainer = document.createElement("div");
-  btnContainer.className = "mt-3 flex justify-between";
+    // Priority badge
+    const prio = (task.priority || 'low').toString().toLowerCase();
+    const badge = document.createElement('div');
+    badge.className = 'text-xs font-semibold text-white';
+    badge.style.position = 'absolute';
+    badge.style.top = '8px';
+    badge.style.right = '8px';
+    badge.style.borderRadius = '999px';
+    badge.style.padding = '4px 8px';
+    badge.style.textTransform = 'capitalize';
+    const colors = { low: '#16a34a', medium: '#0ea5e9', high: '#f59e0b', critical: '#ef4444' };
+    badge.style.background = colors[prio] || colors.low;
+    badge.textContent = prio;
 
-  // Bottone Modifica
-  const editBtn = document.createElement("button");
-  editBtn.textContent = "Modifica";
-  editBtn.className = "bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
-  editBtn.addEventListener("click", function () {
-    openEditForm(task);
-  });
+    // --- Nuovi bottoni ---
+    const btnContainer = document.createElement("div");
+    btnContainer.className = "mt-3 flex justify-between";
 
-  // Bottone Cancella
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Cancella";
-  deleteBtn.className = "bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600";
-  deleteBtn.addEventListener("click", function () {
-    if (confirm("Vuoi davvero cancellare questo task?")) {
-      deleteTask(task.id);
-    }
-  });
+    // Bottone Modifica
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Modifica";
+    editBtn.className = "bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
+    editBtn.addEventListener("click", function () {
+      openEditForm(task);
+    });
 
-  btnContainer.appendChild(editBtn);
-  btnContainer.appendChild(deleteBtn);
+    // Bottone Cancella
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Cancella";
+    deleteBtn.className = "bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600";
+    deleteBtn.addEventListener("click", function () {
+      if (confirm("Vuoi davvero cancellare questo task?")) {
+        deleteTask(task.id);
+      }
+    });
+
+    btnContainer.appendChild(editBtn);
+    btnContainer.appendChild(deleteBtn);
 
 
+    card.appendChild(badge);
     card.appendChild(h);
     card.appendChild(p);
     card.appendChild(btnContainer);
@@ -159,12 +175,13 @@ document.addEventListener("DOMContentLoaded", function () {
     updateCounts();
   }
 
-  function addTask(title, description, status) {
+  function addTask(title, description, status, priority) {
     const task = {
       id: generateId(),
       title: title || "Untitled",
       description: description || "",
       status: status || "backlog",
+      priority: (priority || 'low').toString().toLowerCase(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -256,6 +273,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const title = document.getElementById("title").value.trim();
       const description = document.getElementById("description").value.trim();
       const status = document.getElementById("status").value;
+      const priorityEl = document.querySelector('input[name="priority"]:checked');
+      const priority = priorityEl ? priorityEl.value : 'low';
 
       addTask(title, description, status);
 

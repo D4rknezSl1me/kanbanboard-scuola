@@ -73,16 +73,38 @@
                 <label for="description" class="block text-sm">Description:</label>
                 <textarea id="description" name="description" required class="w-full border px-2 py-1 rounded"></textarea>
               </div>
-              <div>
-                <label for="status" class="block text-sm">Status:</label>
-                <select id="status" name="status" required class="w-full border px-2 py-1 rounded">
-                  <option value="backlog">Backlog</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="review">Review</option>
-                  <option value="done">Done</option>
-                </select>
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <label for="status" class="block text-sm">Status:</label>
+                  <select id="status" name="status" required class="w-full border px-2 py-1 rounded">
+                    <option value="backlog">Backlog</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+                <div class="w-48">
+                  <div class="block text-sm mb-1">Priority:</div>
+                  <div class="flex flex-col gap-2">
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="priority" value="low" checked />
+                      <span class="text-sm">Low</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="priority" value="medium" />
+                      <span class="text-sm">Medium</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="priority" value="high" />
+                      <span class="text-sm">High</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="priority" value="critical" />
+                      <span class="text-sm">Critical</span>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <br><br><br><br><br><br>
               <div class="flex gap-2">
                 <button type="submit" id="issue-btn1" class="bg-[#d91e19] text-white px-3 py-1 rounded center">Add Issue</button>
                 <button type="button" id="cancel-btn" class="bg-gray-200 px-3 py-1 rounded enter">Cancel</button>

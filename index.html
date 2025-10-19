@@ -1,76 +1,91 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body>
-    <div class="bg-[url('carpadium/sexy_carpa_graffiti.png')] bg-cover bg-center h-[100vh]">
-    <h1 class="font-bold bg-red-500  rounded-lg p-4 text-white "  >DevTask Manager</h1>
-        <div id="issue-columns" class="flex gap-3">
-             <div  id="Backlog">
-            <div class="px-4 py-1 bg-white border border-red-500 text-black rounded-full text-sm font-medium"> Backlog: 
-                <span class="font-bold" id="backlog-count">0</span>
-            </div>
-             </div>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DevTask Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-            <div   id="in-progress">
-            <div class="px-4 py-1 bg-white border border-red-500 text-black rounded-full text-sm font-medium">In Progress: 
-                <span class="issue-count  font-bold" id="in-progress-count">0</span>
-            </div>
-            
-            </div>
-            <div  id="review">
-            <div class="px-4 py-1 bg-white border border-red-500 text-black rounded-full text-sm font-medium">Review:
-                <span class="issue-count  font-bold" id="review-count">0</span>
-            </div>
-            
-            </div>
-            <div  id="done">
-            <div class="px-4 py-1 bg-white border border-red-500 text-black rounded-full text-sm font-medium">Done:
-                <span class="issue-count font-bold" id="done-count">0</span>
-            </div>
-            
-            </div>
+  <body class="overflow-hidden">
+    <div
+      class="bg-[url('carpadium/sexy_carpa_graffiti.png')] bg-cover bg-center h-screen flex flex-col"
+    >
+      <!-- Header -->
+      <header
+        class="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-red-600 to-red-400 text-white"
+      >
+        <h1 class="text-2xl font-bold">DevTask Manager</h1>
+        <div class="flex items-center gap-4">
+          <button
+            id="add-issue-btn"
+            class="bg-white text-red-600 font-bold px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+          >
+            Add Issue
+          </button>
+          <input
+            type="text"
+            id="search-bar"
+            placeholder="Search tasks"
+            class="px-3 py-2 rounded-lg text-black outline-none"
+          />
         </div>
-        <div class="issue-manager">
-            <button id="add-issue-btn" class="font-bold bg-red-500  rounded-lg p-4 text-white ">Add Issue</button>
-            <input type="text" id="search-bar" placeholder="Search tasks">
+      </header>
+
+      <!-- Kanban Board -->
+      <main class="flex flex-1 overflow-x-auto gap-4 p-6">
+        <!-- Colonna: Backlog -->
+        <div
+          class="flex flex-col bg-white/95 rounded-2xl shadow-lg w-1/4 min-w-[250px] max-h-[80vh] overflow-y-auto p-4"
+        >
+          <h2 class="text-lg font-bold mb-3 text-gray-700">
+            Backlog <span id="backlog-count" class="text-red-600 font-bold">0</span>
+          </h2>
+          <div id="kanban-backlog" class="flex flex-col gap-3">
+            <!-- Task cards qui -->
+          </div>
         </div>
-        <div class="kanban-board">
-            <div class="kanban-column">
-                <h2 class="text-white">Backlog <span class="issue-count text-white" id="kanban-backlog-count ">0</span></h2>
-                <div class="kanban-cards" id="kanban-backlog">
-                    <!-- Content from test.html will be loaded here dynamically -->
-                </div>
-            </div>
-            <div class="kanban-column">
-                <h2 class="text-white">In Progress <span class="issue-count text-white" id="kanban-in-progress-count ">0</span></h2>
-                <div class="kanban-cards" id="kanban-in-progress">
-                    <!-- Qui ci vanno le Card delle Issues -->
-                </div>
-            </div>
-            <div class="kanban-column">
-                <h2 class="text-white">Review <span class="issue-count text-white" id="kanban-review-count">0</span></h2>
-                <div class="kanban-cards" id="kanban-review">
-                    <!-- Qui ci vanno le Card delle Issues -->
-                </div>
-            </div>
-            <div class="kanban-column">
-                <h2 class="text-white">Done <span class="issue-count text-white" id="kanban-done-count">0</span></h2>
-                <div class="kanban-cards" id="kanban-done">
-                    <!-- Qui ci vanno le Card delle Issues -->
-                </div>
-            </div>
+
+        <!-- Colonna: In Progress -->
+        <div
+          class="flex flex-col bg-white/95 rounded-2xl shadow-lg w-1/4 min-w-[250px] max-h-[80vh] overflow-y-auto p-4"
+        >
+          <h2 class="text-lg font-bold mb-3 text-gray-700">
+            In Progress
+            <span id="in-progress-count" class="text-red-600 font-bold">0</span>
+          </h2>
+          <div id="kanban-in-progress" class="flex flex-col gap-3">
+            <!-- Task cards qui -->
+          </div>
         </div>
+
+        <!-- Colonna: Review -->
+        <div
+          class="flex flex-col bg-white/95 rounded-2xl shadow-lg w-1/4 min-w-[250px] max-h-[80vh] overflow-y-auto p-4"
+        >
+          <h2 class="text-lg font-bold mb-3 text-gray-700">
+            Review <span id="review-count" class="text-red-600 font-bold">0</span>
+          </h2>
+          <div id="kanban-review" class="flex flex-col gap-3">
+            <!-- Task cards qui -->
+          </div>
+        </div>
+
+        <!-- Colonna: Done -->
+        <div
+          class="flex flex-col bg-white/95 rounded-2xl shadow-lg w-1/4 min-w-[250px] max-h-[80vh] overflow-y-auto p-4"
+        >
+          <h2 class="text-lg font-bold mb-3 text-gray-700">
+            Done <span id="done-count" class="text-red-600 font-bold">0</span>
+          </h2>
+          <div id="kanban-done" class="flex flex-col gap-3">
+            <!-- Task cards qui -->
+          </div>
+        </div>
+      </main>
     </div>
-        <script src="script.js" async defer></script>
-    </body>
-</html>
-</div>
 
-        
+    <script src="script.js"></script>
+  </body>
+</html>

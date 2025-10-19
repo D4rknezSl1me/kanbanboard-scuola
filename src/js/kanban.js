@@ -43,8 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("title1").value.trim();
     const description = document.getElementById("description1").value.trim();
     const status = document.getElementById("status1").value;
+    const prioEl = document.querySelector('input[name="priority1"]:checked');
+    const priority = prioEl ? prioEl.value : "low";
 
-    updateTask(task.id, { title, description, status });
+
+    updateTask(task.id, { title, description, status,  priority});
     issueForm.reset();
     formContainer.classList.add("hidden");
     formSection.classList.add("hidden");
@@ -123,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Bottone Modifica
     const editBtn = document.createElement("button");
     editBtn.textContent = "Modifica";
-    editBtn.className = "bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
+    editBtn.className = "bg-[#185e77] text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
     editBtn.addEventListener("click", function () {
       openEditForm(task);
     });
@@ -131,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Bottone Cancella
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Cancella";
-    deleteBtn.className = "bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600";
+    deleteBtn.className = "bg-[#dd440e] text-white text-sm px-2 py-1 rounded hover:bg-red-600";
     deleteBtn.addEventListener("click", function () {
       if (confirm("Vuoi davvero cancellare questo task?")) {
         deleteTask(task.id);

@@ -20,6 +20,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const STORAGE_KEY = "kanban_tasks";
   let tasks = [];
+  const USERS_KEY = 'kanban_users';
+
+  function loadUsers() {
+    try {
+      const raw = localStorage.getItem(USERS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error('Errore localStorage users:', e);
+      return [];
+    }
+  }
+
+  function populateUserSelects() {
+    const users = loadUsers();
+    const sel = document.getElementById('user');
+    const sel1 = document.getElementById('user1');
+    [sel, sel1].forEach(s => {
+      if (!s) return;
+      // keep the default placeholder option, then append current users
+      // remove existing dynamic options first
+      Array.from(s.querySelectorAll('option[data-user-id]')).forEach(o => o.remove());
+      users.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.name;
+        opt.setAttribute('data-user-id', u.id);
+        s.appendChild(opt);
+      });
+    });
+  }
 
   function openEditForm(task) {
   const formContainer = document.getElementById("form-edit");
@@ -36,6 +66,16 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("title1").value = task.title || "";
   document.getElementById("description1").value = task.description || "";
   document.getElementById("status1").value = task.status || "backlog";
+  // populate user select and set current value if available
+  const userSelect = document.getElementById('user1');
+  if (userSelect) {
+    populateUserSelects();
+    if (task.userId) {
+      userSelect.value = task.userId;
+    } else {
+      userSelect.value = '';
+    }
+  }
 
   // Cambia comportamento del submit
   issueForm.onsubmit = function (e) {
@@ -47,8 +87,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const prioEl = issueForm.querySelector('input[name="priority"]:checked');
   const priority = prioEl ? prioEl.value : "low";
 
+  const userSel = document.getElementById('user1');
+  const userId = userSel && userSel.value ? userSel.value : null;
+  const userName = userSel && userSel.value ? (userSel.options[userSel.selectedIndex].text || null) : null;
 
-    updateTask(task.id, { title, description, status,  priority});
+    updateTask(task.id, { title, description, status, priority, userId, userName });
     issueForm.reset();
     formContainer.classList.add("hidden");
     formSection.classList.add("hidden");
@@ -69,12 +112,34 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function saveTasks() {
+    // debounce writes to localStorage to avoid blocking the main thread
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      if (saveTasks._timer) clearTimeout(saveTasks._timer);
+      saveTasks._timer = setTimeout(() => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        } catch (e) {
+          console.error("Errore localStorage (deferred):", e);
+        }
+        saveTasks._timer = null;
+      }, 150);
     } catch (e) {
-      console.error("Errore localStorage:", e);
+      console.error("Errore scheduling localStorage write:", e);
     }
   }
+
+  // Flush pending save on unload so recent changes aren't lost
+  window.addEventListener('beforeunload', function () {
+    if (saveTasks._timer) {
+      clearTimeout(saveTasks._timer);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      } catch (e) {
+        /* ignore */
+      }
+      saveTasks._timer = null;
+    }
+  });
 
   function generateId() {
     try {
@@ -118,11 +183,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Priority badge
     const prio = (task.priority || 'low').toString().toLowerCase();
     const badge = document.createElement('div');
-  // position/padding handled by Tailwind; background stays dynamic
-  badge.className = 'text-xs font-semibold text-white absolute top-2 right-2 rounded-full px-2 py-1 capitalize';
+    // we'll position badge together with owner in a small top-right container
+    badge.className = 'text-xs font-semibold text-white rounded-full px-2 py-1 capitalize';
     const colors = { low: '#16a34a', medium: '#0ea5e9', high: '#f59e0b', critical: '#ef4444' };
     badge.style.background = colors[prio] || colors.low;
     badge.textContent = prio;
+
+  // Creator / owner label
+  const owner = document.createElement('div');
+  // allow owner label to size to its content (no truncation)
+  owner.className = 'text-xs font-medium text-white rounded-full px-2 py-1 bg-gray-600/60';
+  owner.textContent = task.userName || 'Anonimo';
+  owner.title = task.userName || 'Anonimo';
+
+  // header container that holds owner and badge at the top-right
+  const headerRight = document.createElement('div');
+  headerRight.className = 'absolute top-2 right-2 flex items-center gap-2';
+  headerRight.appendChild(owner);
+  headerRight.appendChild(badge);
 
     // --- Nuovi bottoni ---
     const btnContainer = document.createElement("div");
@@ -150,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnContainer.appendChild(deleteBtn);
 
 
-    card.appendChild(badge);
+  card.appendChild(headerRight);
     card.appendChild(h);
     card.appendChild(p);
     card.appendChild(btnContainer);
@@ -167,33 +245,47 @@ document.addEventListener("DOMContentLoaded", function () {
     return card;
   }
 
-  // Setup drag & drop listeners on the column card containers
+  // Setup drag & drop using event delegation to avoid per-container listeners
+  let dragDropInitialized = false;
   function setupDragDrop() {
-    const containers = document.querySelectorAll('.kanban-cards');
-    containers.forEach(container => {
-      container.addEventListener('dragover', function (e) {
-        e.preventDefault(); // allow drop
-        // visual highlight
-        container.classList.add('ring-2','ring-offset-2','ring-indigo-200');
-        e.dataTransfer.dropEffect = 'move';
-      });
+    if (dragDropInitialized) return;
+    const board = document.querySelector('.kanban-board');
+    if (!board) return;
 
-      container.addEventListener('dragleave', function () {
-        container.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
-      });
+    let currentHighlight = null;
 
-      container.addEventListener('drop', function (e) {
-        e.preventDefault();
-        container.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
-        const id = e.dataTransfer.getData('text/plain');
-        if (!id) return;
-
-        // new status is derived from container id (kanban-backlog -> backlog)
-        const newStatus = container.id.replace(/^kanban-/, '');
-        // update task status and re-render
-        updateTaskStatus(id, newStatus);
-      });
+    board.addEventListener('dragover', function (e) {
+      const container = e.target.closest('.kanban-cards');
+      if (!container) return;
+      e.preventDefault();
+      if (currentHighlight && currentHighlight !== container) {
+        currentHighlight.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
+      }
+      currentHighlight = container;
+      container.classList.add('ring-2','ring-offset-2','ring-indigo-200');
+      try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
     });
+
+    board.addEventListener('dragleave', function (e) {
+      const container = e.target.closest('.kanban-cards');
+      if (!container) return;
+      container.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
+      if (currentHighlight === container) currentHighlight = null;
+    });
+
+    board.addEventListener('drop', function (e) {
+      const container = e.target.closest('.kanban-cards');
+      if (!container) return;
+      e.preventDefault();
+      container.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
+      currentHighlight = null;
+      const id = e.dataTransfer.getData('text/plain');
+      if (!id) return;
+      const newStatus = container.id.replace(/^kanban-/, '');
+      updateTaskStatus(id, newStatus);
+    });
+
+    dragDropInitialized = true;
   }
 
   // renderAll optionally accepts a searchTerm to filter tasks by title (case-insensitive)
@@ -241,6 +333,22 @@ document.addEventListener("DOMContentLoaded", function () {
     setText("kanban-done-count", counts.done);
     // attach drag/drop handlers after rendering
     setupDragDrop();
+
+    [
+      ["kanban-backlog", counts.backlog],
+      ["kanban-in-progress", counts["in-progress"]],
+      ["kanban-review", counts.review],
+      ["kanban-done", counts.done]
+    ].forEach(([id, count]) => {
+      const container = document.getElementById(id);
+      if (!container) return;
+      if (count === 0) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'text-gray-500 text-sm italic text-center mt-2';
+        placeholder.textContent = 'Nessuna Issue';
+        container.appendChild(placeholder);
+      }
+    });
   }
 
   // helper to read current search bar value
@@ -256,6 +364,8 @@ document.addEventListener("DOMContentLoaded", function () {
       description: description || "",
       status: status || "backlog",
       priority: (priority || 'low').toString().toLowerCase(),
+      userId: null,
+      userName: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -350,16 +460,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const priorityEl = document.querySelector('input[name="priority"]:checked');
   const priority = priorityEl ? priorityEl.value : 'low';
 
-  addTask(title, description, status, priority);
+  const userSel = document.getElementById('user');
+  const userId = userSel && userSel.value ? userSel.value : null;
+  const userName = userSel && userSel.value ? (userSel.options[userSel.selectedIndex].text || null) : null;
+
+  const created = addTask(title, description, status, priority);
+  if (created) {
+    created.userId = userId;
+    created.userName = userName;
+    saveTasks();
+  }
       if (formContainer) formContainer.classList.add("hidden");
       issueForm.reset();
     });
   }
 
   loadTasks();
+  // populate user selects with current users
+  populateUserSelects();
   renderAll();
 
-  // Live search: re-render on each input change
   const searchBar = document.getElementById("search-bar");
   if (searchBar) {
     searchBar.addEventListener("input", function (e) {

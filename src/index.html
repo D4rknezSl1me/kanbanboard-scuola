@@ -7,13 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Utility to hide scrollbars but keep scrolling */
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   </head>
   <body class="overflow-hidden">
-    <div class="min-h-screen bg-cover bg-center" style="background-image: url('../assets/imgs/ChatGPT\ Image\ Oct\ 13\,\ 2025\,\ 11_46_33\ AM.png')">
+    <div class="min-h-screen bg-cover bg-center bg-[url('../assets/imgs/main_bg.png')]">
       <header class="p-4 flex items-center justify-between bg-black/30 backdrop-blur-md ">
         <h1 class="font-bold text-4xl text-white inline-block">DevTask Manager</h1>
 
@@ -39,6 +38,7 @@
         <section class="issue-manager flex items-center gap-4">
           <button id="add-issue-btn" class="font-bold bg-[#dd440e] rounded-lg p-3 text-white">Add Issue</button>
           <input type="text" id="search-bar" placeholder="Search tasks" class="px-3 py-2 rounded border" />
+          <a id="goto-btn" href="./users.html" class="ml-auto font-medium bg-[#185e77] rounded-lg p-3 text-white">User Manager</a>
         </section>
 
         <section class="kanban-board grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -99,6 +99,10 @@
                     <option value="review">Review</option>
                     <option value="done">Done</option>
                   </select>
+                  <label for="user" class="block text-sm mt-2">Assegnato a:</label>
+                  <select id="user" name="user" class="w-full border px-2 py-1 rounded">
+                    <option value="">-- Nessun utente --</option>
+                  </select>
                 </div>
                 <div class="w-48">
                   <div class="block text-sm mb-1">Priority:</div>
@@ -149,6 +153,10 @@
                     <option value="in-progress">In Progress</option>
                     <option value="review">Review</option>
                     <option value="done">Done</option>
+                  </select>
+                  <label for="user1" class="block text-sm mt-2">Assegnato a:</label>
+                  <select id="user1" name="user1" class="w-full border px-2 py-1 rounded">
+                    <option value="">-- Nessun utente --</option>
                   </select>
                 </div>
                 <div class="w-48">

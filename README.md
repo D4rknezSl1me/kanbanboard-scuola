@@ -39,7 +39,6 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 ## 3. Tecnologie utilizzate
 
 * **Frontend**: HTML, CSS (Tailwind), JavaScript.
-* **Backend** Js
 * **Strumenti**: Editor di codice (VS Code), Git per versionamento.
 
 ## 4. Descrizione funzionalità
@@ -55,7 +54,7 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 ## 5. Architettura del progetto
 
 * **Frontend**: Gestisce l’interfaccia utente e le interazioni.
-* **Backend**: Riceve e memorizza i dati dal form, gestisce le parti dinamiche della pagina (drag & drop, form, localStorage).
+* **Gestione dati**: La memorizzazione è simulata lato client tramite localStorage, che conserva temporaneamente le informazioni inserite dall’utente senza l’uso di un server o di un vero backend.
 
 
 ### Istruzioni

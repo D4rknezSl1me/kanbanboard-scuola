@@ -49,12 +49,13 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 * [x] **Spostamento task**: Drag and drop dei task tra colonne (Da fare, In corso, Fatto).
 * [x] **Eliminazione task**: Rimuovere un task completato o non più necessario.
 * [x] **Salvataggio dati**: I task e lo stato della board vengono salvati per non perdere le modifiche.
-* [x] **Filtri e ricerche** (opzionale): Ricerca di task per parola chiave o filtro per categoria.
+* [x] **Filtri e ricerche**: Ricerca di task per parola chiave o filtro per categoria.
+* [x] **Gestione Utenti**: Creazione ed Eliminazione degli utenti che gestiscono le task.
 
 ## 5. Architettura del progetto
 
 * **Frontend**: Gestisce l’interfaccia utente e le interazioni.
-* **Backend**: Riceve e memorizza i dati dal form, gestisce le parti dinamiche della pagina (drag & drop, form).
+* **Backend**: Riceve e memorizza i dati dal form, gestisce le parti dinamiche della pagina (drag & drop, form, localStorage).
 
 
 ### Istruzioni

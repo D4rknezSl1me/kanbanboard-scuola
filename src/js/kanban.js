@@ -384,30 +384,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return tasks.slice();
   }
 
-  function updateCounts() {
-    const counts = {
-      backlog: tasks.filter(t => t.status === "backlog").length,
-      "in-progress": tasks.filter(t => t.status === "in-progress").length,
-      review: tasks.filter(t => t.status === "review").length,
-      done: tasks.filter(t => t.status === "done").length,
-    };
-
-    const setText = (id, value) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = value;
-    };
-
-    setText("backlog-count", counts.backlog);
-    setText("in-progress-count", counts["in-progress"]);
-    setText("review-count", counts.review);
-    setText("done-count", counts.done);
-
-    setText("kanban-backlog-count", counts.backlog);
-    setText("kanban-in-progress-count", counts["in-progress"]);
-    setText("kanban-review-count", counts.review);
-    setText("kanban-done-count", counts.done);
-  }
-
   function addCardToColumn(title, description, columnKey) {
     const status = (columnKey || "backlog").toString().toLowerCase();
     const created = addTask(title, description, status);

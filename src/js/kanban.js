@@ -453,7 +453,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   loadTasks();
-  // populate user selects with current users
   populateUserSelects();
   renderAll();
 

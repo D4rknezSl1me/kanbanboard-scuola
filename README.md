@@ -35,7 +35,6 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 * Consentire l’aggiunta, modifica, spostamento e cancellazione di task.
 * Organizzare i task in colonne rappresentanti lo stato di avanzamento.
 * Salvare i dati in modo persistente (localStorage).
-* Garantire un’interfaccia responsive, accessibile da desktop e possibilmente da mobile.
 
 ## 3. Tecnologie utilizzate
 
@@ -46,11 +45,11 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 ## 4. Descrizione funzionalità
 
 * [x] **Creazione task**: L’utente può inserire un nuovo task con titolo e descrizione.
-* [ ] **Modifica task**: È possibile modificare il contenuto di un task.
-* [ ] **Spostamento task**: Drag and drop dei task tra colonne (Da fare, In corso, Fatto).
-* [ ] **Eliminazione task**: Rimuovere un task completato o non più necessario.
-* [ ] **Salvataggio dati**: I task e lo stato della board vengono salvati per non perdere le modifiche.
-* [ ] **Filtri e ricerche** (opzionale): Ricerca di task per parola chiave o filtro per categoria.
+* [x] **Modifica task**: È possibile modificare il contenuto di un task.
+* [x] **Spostamento task**: Drag and drop dei task tra colonne (Da fare, In corso, Fatto).
+* [x] **Eliminazione task**: Rimuovere un task completato o non più necessario.
+* [x] **Salvataggio dati**: I task e lo stato della board vengono salvati per non perdere le modifiche.
+* [x] **Filtri e ricerche** (opzionale): Ricerca di task per parola chiave o filtro per categoria.
 
 ## 5. Architettura del progetto
 
@@ -86,11 +85,6 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
    http://127.0.0.1:8000/
    ```
 
-## 8. Test e verifica
-
-* Descrivere i test effettuati per verificare le funzionalità principali.
-* Segnalare eventuali bug noti o limitazioni.
-
 ## 9. Conclusioni
 
 Il progetto ha permesso di realizzare una semplice Kanban Board funzionale, utile per la gestione di task in ambito scolastico o personale. È stato un buon esercizio per comprendere la programmazione frontend, la gestione dello stato e le interazioni utente.
@@ -99,6 +93,3 @@ Il progetto ha permesso di realizzare una semplice Kanban Board funzionale, util
 
 * Documentazione ufficiale di Tailwind / W3Schools 
 * Librerie esterne integrate: Tailwind
-
-# Collezione Carpe
-![](assets/imgs/sexy_carpa_graffiti.png)

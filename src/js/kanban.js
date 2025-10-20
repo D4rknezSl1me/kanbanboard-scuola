@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
   card.className = "rounded-lg p-3 mb-3 shadow border border-gray-200 overflow-hidden cursor-pointer bg-[#edd5d5]/30 aspect-[2/1] flex flex-col relative";
     card.dataset.taskId = task.id;
 
-    // Enable native drag & drop
+    // Abilita native drag & drop
     card.draggable = true;
     card.addEventListener('dragstart', function (e) {
       // setData to drag event data
@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // update visible counts based on filtered results
+    // aggiorna contatori
     const counts = {
       backlog: filtered.filter(t => t.status === "backlog").length,
       "in-progress": filtered.filter(t => t.status === "in-progress").length,
@@ -306,9 +306,10 @@ document.addEventListener("DOMContentLoaded", function () {
     setText("kanban-in-progress-count", counts["in-progress"]);
     setText("kanban-review-count", counts.review);
     setText("kanban-done-count", counts.done);
-    // attach drag/drop handlers after rendering
+    // rimettere drag & drop ai nuovi elementi
     setupDragDrop();
 
+    // mostra se la colonna e' vuota
     [
       ["kanban-backlog", counts.backlog],
       ["kanban-in-progress", counts["in-progress"]],
@@ -326,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // helper to read current search bar value
+  // legge il valore della search bar
   function getSearchTerm() {
     const el = document.getElementById("search-bar");
     return el ? el.value : "";

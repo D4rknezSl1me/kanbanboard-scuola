@@ -66,8 +66,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("title1").value = task.title || "";
   document.getElementById("description1").value = task.description || "";
   document.getElementById("status1").value = task.status || "backlog";
+    
+  const prio = (task.priority || 'low').toString().toLowerCase();
+  const prioInputs = issueForm.querySelectorAll('input[name="priority"]');
+  prioInputs.forEach(input => {
+    input.checked = (String(input.value).toLowerCase() === prio);
+  });
   
-  // populate user select and set current value if available
   const userSelect = document.getElementById('user1');
   if (userSelect) {
     populateUserSelects();
@@ -78,19 +83,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Cambia comportamento del submit
   issueForm.onsubmit = function (e) {
     e.preventDefault();
     const title = document.getElementById("title1").value.trim();
     const description = document.getElementById("description1").value.trim();
     const status = document.getElementById("status1").value;
-  // scope the selector to the edit form so we read the correct radio inputs
-  const prioEl = issueForm.querySelector('input[name="priority"]:checked');
-  const priority = prioEl ? prioEl.value : "low";
-
-  const userSel = document.getElementById('user1');
-  const userId = userSel && userSel.value ? userSel.value : null;
-  const userName = userSel && userSel.value ? (userSel.options[userSel.selectedIndex].text || null) : null;
+    const prioEl = issueForm.querySelector('input[name="priority"]:checked');
+    const priority = prioEl ? prioEl.value : "low";
+  
+    const userSel = document.getElementById('user1');
+    const userId = userSel && userSel.value ? userSel.value : null;
+    const userName = userSel && userSel.value ? (userSel.options[userSel.selectedIndex].text || null) : null;
 
     updateTask(task.id, { title, description, status, priority, userId, userName });
     issueForm.reset();
@@ -113,34 +116,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function saveTasks() {
-    // debounce writes to localStorage to avoid blocking the main thread
     try {
-      if (saveTasks._timer) clearTimeout(saveTasks._timer);
-      saveTasks._timer = setTimeout(() => {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-        } catch (e) {
-          console.error("Errore localStorage (deferred):", e);
-        }
-        saveTasks._timer = null;
-      }, 150);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     } catch (e) {
-      console.error("Errore scheduling localStorage write:", e);
+      console.error("Errore localStorage (deferred):", e);
     }
   }
-
-  // Flush pending save on unload so recent changes aren't lost
-  window.addEventListener('beforeunload', function () {
-    if (saveTasks._timer) {
-      clearTimeout(saveTasks._timer);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-      } catch (e) {
-        /* ignore */
-      }
-      saveTasks._timer = null;
-    }
-  });
 
   function generateId() {
     try {
@@ -149,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (e) {}
 
-    // In caso il browser non supporti crypto.randomUUID
+    // In caso il browser non supporti crypto.randomUUID Stringa Base 36 - 0. 7 caratteri
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
 
@@ -161,15 +142,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Enable native drag & drop
     card.draggable = true;
     card.addEventListener('dragstart', function (e) {
-      // store the task id
+      // setData to drag event data
       e.dataTransfer.setData('text/plain', task.id);
-      // small visual cue
       card.classList.add('opacity-60');
       try { e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
     });
     card.addEventListener('dragend', function () {
       card.classList.remove('opacity-60');
-      // remove any drag-over highlights left on containers
+      // reset stile colonne
       document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('ring-2','ring-offset-2','ring-indigo-200'));
     });
 
@@ -181,33 +161,28 @@ document.addEventListener("DOMContentLoaded", function () {
   p.className = "text-sm text-gray-700 mt-2 flex-1 overflow-auto no-scrollbar";
     p.textContent = task.description || "";
 
-    // Priority badge
     const prio = (task.priority || 'low').toString().toLowerCase();
     const badge = document.createElement('div');
-    // we'll position badge together with owner in a small top-right container
+
     badge.className = 'text-xs font-semibold text-white rounded-full px-2 py-1 capitalize';
     const colors = { low: '#16a34a', medium: '#0ea5e9', high: '#f59e0b', critical: '#ef4444' };
     badge.style.background = colors[prio] || colors.low;
     badge.textContent = prio;
 
-  // Creator / owner label
   const owner = document.createElement('div');
-  // allow owner label to size to its content (no truncation)
+
   owner.className = 'text-xs font-medium text-white rounded-full px-2 py-1 bg-gray-600/60';
   owner.textContent = task.userName || 'Anonimo';
   owner.title = task.userName || 'Anonimo';
 
-  // header container that holds owner and badge at the top-right
   const headerRight = document.createElement('div');
   headerRight.className = 'absolute top-2 right-2 flex items-center gap-2';
   headerRight.appendChild(owner);
   headerRight.appendChild(badge);
 
-    // --- Nuovi bottoni ---
     const btnContainer = document.createElement("div");
     btnContainer.className = "mt-3 flex justify-between";
 
-    // Bottone Modifica
     const editBtn = document.createElement("button");
     editBtn.textContent = "Modifica";
     editBtn.className = "bg-[#185e77] text-white text-sm px-2 py-1 rounded hover:bg-blue-600";
@@ -215,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
       openEditForm(task);
     });
 
-    // Bottone Cancella
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Cancella";
     deleteBtn.className = "bg-[#dd440e] text-white text-sm px-2 py-1 rounded hover:bg-red-600";
@@ -234,7 +208,6 @@ document.addEventListener("DOMContentLoaded", function () {
     card.appendChild(p);
     card.appendChild(btnContainer);
 
-    // Double-click per procedere allo stato successivo
     card.addEventListener("dblclick", function () {
       // backlog -> in-progress -> review -> done -> backlog
       const order = ["backlog", "in-progress", "review", "done"];
@@ -246,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return card;
   }
 
-  // Setup drag & drop using event delegation to avoid per-container listeners
+  // Setup drag & drop
   let dragDropInitialized = false;
   function setupDragDrop() {
     if (dragDropInitialized) return;
@@ -254,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!board) return;
 
     let currentHighlight = null;
-
+    // colonne, si attiva a spam quando c'e' un draggable sopra
     board.addEventListener('dragover', function (e) {
       const container = e.target.closest('.kanban-cards');
       if (!container) return;
@@ -280,6 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
       container.classList.remove('ring-2','ring-offset-2','ring-indigo-200');
       currentHighlight = null;
+      // Riprende l'id salvato all'inizio
       const id = e.dataTransfer.getData('text/plain');
       if (!id) return;
       const newStatus = container.id.replace(/^kanban-/, '');
@@ -289,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function () {
     dragDropInitialized = true;
   }
 
-  // renderAll optionally accepts a searchTerm to filter tasks by title (case-insensitive)
+  // mostra filtrando (case-insensitive)
   function renderAll(searchTerm = "") {
     const term = String(searchTerm || "").trim().toLowerCase();
 
@@ -298,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (el) el.innerHTML = "";
     });
 
-    // Filter tasks by title when a search term exists
+    // filtri
     const filtered = term
       ? tasks.filter(t => (t.title || "").toLowerCase().includes(term))
       : tasks.slice();

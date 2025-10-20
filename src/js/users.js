@@ -4,6 +4,7 @@
   function generateId() {
     if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
     return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+    // Stringa Base 36 tolti 0.
   }
 
   function loadUsers() {
@@ -78,6 +79,7 @@
     if (!trimmed) return { ok: false, error: 'Il nome non può essere vuoto' };
 
     const users = loadUsers();
+    // .some() vuole una funzione
     if (users.some(u => u.name.toLowerCase() === trimmed.toLowerCase())) {
       return { ok: false, error: 'Utente già presente' };
     }
@@ -104,7 +106,6 @@
       const name = input.value;
       const result = addUser(name);
       if (!result.ok) {
-        // simple inline feedback
         alert(result.error || 'Errore');
         return;
       }
@@ -114,12 +115,4 @@
 
     renderUsers();
   });
-
-  // Expose for console debugging (optional)
-  window._userManager = {
-    load: loadUsers,
-    save: saveUsers,
-    add: addUser,
-    remove: removeUser,
-  };
 })();

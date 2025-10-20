@@ -14,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const bg2 = document.getElementById("form-section-edit");
 
   
-
-  
   addIssueBtn.addEventListener("click", function () {
     formContainer.classList.remove("hidden");
     bg.classList.remove("hidden");
@@ -35,9 +33,5 @@ document.addEventListener("DOMContentLoaded", function () {
   btnCancel2.addEventListener("click", function () {
     formContainerEdit.classList.add("hidden");
     bg2.classList.add("hidden");
-    
   });
-  
- 
-
 });

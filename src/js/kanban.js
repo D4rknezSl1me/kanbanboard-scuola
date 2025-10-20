@@ -469,6 +469,7 @@ document.addEventListener("DOMContentLoaded", function () {
     created.userId = userId;
     created.userName = userName;
     saveTasks();
+    renderAll(getSearchTerm());
   }
       if (formContainer) formContainer.classList.add("hidden");
       issueForm.reset();

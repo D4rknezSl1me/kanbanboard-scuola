@@ -38,7 +38,7 @@ Questo progetto ha come obiettivo la realizzazione di una **Kanban Board digital
 
 ## 3. Tecnologie utilizzate
 
-* **Frontend**: HTML, CSS, JavaScript (Tailwind).
+* **Frontend**: HTML, CSS (Tailwind), JavaScript.
 * **Backend** Js
 * **Strumenti**: Editor di codice (VS Code), Git per versionamento.
 

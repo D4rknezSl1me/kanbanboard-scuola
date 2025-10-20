@@ -32,14 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Menu a tendina utenti
   function populateUserSelects() {
     const users = loadUsers();
     const sel = document.getElementById('user');
     const sel1 = document.getElementById('user1');
     [sel, sel1].forEach(s => {
       if (!s) return;
-      // keep the default placeholder option, then append current users
-      // remove existing dynamic options first
+      // Rimuovi gli utenti gia presenti
       Array.from(s.querySelectorAll('option[data-user-id]')).forEach(o => o.remove());
       users.forEach(u => {
         const opt = document.createElement('option');
@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("title1").value = task.title || "";
   document.getElementById("description1").value = task.description || "";
   document.getElementById("status1").value = task.status || "backlog";
+  
   // populate user select and set current value if available
   const userSelect = document.getElementById('user1');
   if (userSelect) {
